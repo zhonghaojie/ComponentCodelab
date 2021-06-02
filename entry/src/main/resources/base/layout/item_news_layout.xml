@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DirectionalLayout
     xmlns:ohos="http://schemas.huawei.com/res/ohos"
-    ohos:height="match_content"
+    ohos:height="110vp"
     ohos:width="match_parent"
     ohos:orientation="vertical">
 
     <DirectionalLayout
         ohos:orientation="horizontal"
         ohos:height="109vp"
+        ohos:padding="10vp"
         ohos:width="match_parent">
 
         <Text

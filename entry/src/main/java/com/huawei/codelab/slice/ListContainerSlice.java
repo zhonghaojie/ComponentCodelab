@@ -42,9 +42,9 @@ public class ListContainerSlice extends AbilitySlice {
         String[] listNames = new String[]{"All", "Health", "Finance", "Technology", "Sport", "Internet", "Game"};
         newsTypeProvider = new NewsTypeProvider(listNames,this);
         selectorListContainer.setItemProvider(newsTypeProvider);
-        newsTypeProvider.notifyDataChanged();
 
 
+        //生成几个假数据
         String[] newsTypes = new String[]{"Health", "Finance", "Finance", "Technology", "Sport", "Health", "Internet", "Game", "Game", "Internet"};
         String[] newsTitles = new String[]{
                 "Best Enterprise Wi-Fi Network Award of the Wireless Broadband Alliance 2020",
@@ -58,8 +58,8 @@ public class ListContainerSlice extends AbilitySlice {
                 "Intelligent Twins Won the Leading Technology Achievement Award at the 7th World Internet Conference",
                 "Maximizing the Value of Wireless Networks and Ushering in the Golden Decade of 5G"
         };
-        totalNews = new ArrayList<NewsInfo>();
-        selectNews = new ArrayList<NewsInfo>();
+        totalNews = new ArrayList<>();
+        selectNews = new ArrayList<>();
         for (int i = 0; i < newsTypes.length; i++) {
             NewsInfo newsInfo = new NewsInfo();
             newsInfo.setTitle(newsTitles[i]);
@@ -70,42 +70,37 @@ public class ListContainerSlice extends AbilitySlice {
 
         newsContentProvider = new NewsContentProvider(selectNews, this);
         newsListContainer.setItemProvider(newsContentProvider);
-        newsContentProvider.notifyDataChanged();
     }
 
-    private int currentPosition = 0;
     private void initListener(){
-        selectorListContainer.setItemClickedListener(new ListContainer.ItemClickedListener() {
-            @Override
-            public void onItemClicked(ListContainer listContainer, Component component, int i, long l) {
-                currentPosition = i;
-                setCategorizationFocus(false);
-                Component newsTypeText = component.findComponentById(ResourceTable.Id_text_news_type);
-                if (newsTypeText instanceof Text) {
-                    selectText = (Text) newsTypeText;
-                }
-                setCategorizationFocus(true);
-                selectNews.clear();
-                if (i == 0) {
-                    selectNews.addAll(totalNews);
-                } else {
-                    String newsType = selectText.getText();
-                    for (NewsInfo newsData : totalNews) {
-                        if (newsType.equals(newsData.getType())) {
-                            selectNews.add(newsData);
-                        }
+        selectorListContainer.setItemClickedListener((listContainer, component, i, l) -> {
+            setCategorizationFocus(false);
+            Component newsTypeText = component.findComponentById(ResourceTable.Id_text_news_type);
+            if (newsTypeText instanceof Text) {
+                selectText = (Text) newsTypeText;
+            }
+            setCategorizationFocus(true);
+            selectNews.clear();
+            if (i == 0) {
+                selectNews.addAll(totalNews);
+            } else {
+                String newsType = selectText.getText();
+                for (NewsInfo newsData : totalNews) {
+                    if (newsType.equals(newsData.getType())) {
+                        selectNews.add(newsData);
                     }
                 }
-                updateList();
             }
+            updateList();
         });
         selectorListContainer.setSelected(true);
         selectorListContainer.setSelectedItemIndex(0);
     }
     private void updateList(){
         newsContentProvider.notifyDataChanged();
-        newsListContainer.invalidate();
-        newsListContainer.scrollToCenter(currentPosition);
+        //官方有加这一句，实际发现不加也可以刷新列表
+//        newsListContainer.invalidate();
+        newsListContainer.scrollToCenter(0);
 
     }
     private void setCategorizationFocus(boolean isFocus) {
